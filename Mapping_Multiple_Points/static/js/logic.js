@@ -17,6 +17,7 @@ let map = L.map('mapid').setView([40.7, -94.5], 4);
    });
 
 
+
 //adding a circle marker on our map for los angeles
 //L.circle works its radius in meters vs L.circleMarker works its radius in pixels
 let circle = L.circle([34.0522, -118.2437],{
@@ -24,8 +25,6 @@ let circle = L.circle([34.0522, -118.2437],{
     color:'black',
     fillColor:'#ffffa1'
 }).addTo(map);
-
-
 
 /*
 //creates the tile layer that will be the background for our map
@@ -36,7 +35,6 @@ let streets = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?
     accessToken: API_KEY
 });
 */
-
 
 //This is the Static Tiles API Format in the leaflet tileLayer() method
 //To use the mapbox Styles API built into the mapbox
