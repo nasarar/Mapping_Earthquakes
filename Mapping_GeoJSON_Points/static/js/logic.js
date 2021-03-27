@@ -3,7 +3,7 @@
 console.log("working");
 
 //creates the map object with a center and zoom level
-let map = L.map('mapid').setView([30, 30], 20);
+let map = L.map('mapid').setView([30, 30], 2);
 
 
 
@@ -65,10 +65,11 @@ streets.addTo(map);
 let airportData = "https://raw.githubusercontent.com/nasarar/Mapping_Earthquakes/main/Mapping_GeoJSON_Points/majorAirports.json";
 
 d3.json(airportData).then(function(data){
-    console.log(data);
+    console.log(data),
 
     //creates a GeoJSON layer with retrieved data
-    L.geoJson(data).addTo(map);
+    L.geoJson(data).bindPopup("<h2> Airport Code: " + "</h2> <hr> <h3> Airport Name: " + "</h3>").addTo(map);
+
 });
 
 
