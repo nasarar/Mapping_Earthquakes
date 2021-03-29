@@ -1,18 +1,25 @@
 // Add console.log to check to see if our code is working.
 console.log("working");
 
-// We create the tile layer that will be the background of our map.
+// Tile for streets map
 let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
 	maxZoom: 18,
 	accessToken: API_KEY
 });
 
-// We create the second tile layer that will be the background of our map.
+// Tile for satellite map
 let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
 	maxZoom: 18,
 	accessToken: API_KEY
+});
+
+//Tile for dark map
+let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    accessToken: API_KEY
 });
 
 // Create the map object with center, zoom level and default layer.
@@ -25,26 +32,26 @@ let map = L.map('mapid', {
 // Create a base layer that holds all three maps.
 let baseMaps = {
   "Streets": streets,
-  "Satellite": satelliteStreets
+  "Satellite": satelliteStreets,
+  "Dark": dark
 };
 
-// 1. Add a 2nd layer group for the tectonic plate data.
+//Adds a group layer for the tectonic plate, all earthquakes, and major earthquake data.
 let allEarthquakes = new L.LayerGroup();
 let tectonicplates = new L.LayerGroup();
 let majorEarthquake = new L.LayerGroup();
 
-// 2. Add a reference to the tectonic plates group to the overlays object.
+//Adds a reference to the layer group to the overlays object.
 let overlays = {
   "Earthquakes": allEarthquakes,
   "Tectonic Plates": tectonicplates,
   "Major Earthquakes": majorEarthquake
 };
 
-// Then we add a control to the map that will allow the user to change which
-// layers are visible.
+//adds a control to the map that will allow the user to change which layers are visible.
 L.control.layers(baseMaps, overlays).addTo(map);
 
-// Retrieve the earthquake GeoJSON data.
+// Retrieves the earthquake GeoJSON data.
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function(data) {
 
   // This function returns the style data for each of the earthquakes we plot on
@@ -91,7 +98,7 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
     return magnitude * 4;
   }
 
-  // Creating a GeoJSON layer with the retrieved data.
+  // Creating a GeoJSON layer with the retrieved data for all earthquakes
   L.geoJson(data, {
     	// We turn each feature into a circleMarker on the map.
     	pointToLayer: function(feature, latlng) {
@@ -133,6 +140,7 @@ console.log(data);
     return magnitude * 4;
   }
 
+  //function to get colour for varrying magnitudes
   function getColor(magnitude){
     if (magnitude > 5){
         return "#ea2c2c";
@@ -145,6 +153,8 @@ console.log(data);
   }
   return "#98ee00";
   }
+
+  //Creating a GeoJSON layer with the retrieved data for major earthquakes
   L.geoJson(data,{
   pointToLayer: function(feature, latlng){
     console.log(data);
@@ -195,11 +205,11 @@ legend.onAdd = function() {
     return div;
   };
 
-  // Finally, we our legend to the map.
+  //legend to the map.
   legend.addTo(map);
 
 
-  // 3. Use d3.json to make a call to get our Tectonic Plate geoJSON data.
+  //makes a call to get our Tectonic Plate geoJSON data.
   d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json").then(function(data) {
     console.log(data);
     L.geoJson(data).addTo(tectonicplates);
